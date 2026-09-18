@@ -57,10 +57,10 @@ exports.handler = async (event) => {
       'shipping_options[0][shipping_rate_data][display_name]',
       shippingAmount === 0 ? 'Free U.S. Shipping' : 'Standard U.S. Shipping'
     );
-    form.set('shipping_options[0][shipping_rate_data][delivery_estimate][minimum][unit]', 'business_day');
-    form.set('shipping_options[0][shipping_rate_data][delivery_estimate][minimum][value]', '5');
-    form.set('shipping_options[0][shipping_rate_data][delivery_estimate][maximum][unit]', 'business_day');
-    form.set('shipping_options[0][shipping_rate_data][delivery_estimate][maximum][value]', '10');
+    form.set('shipping_options[0][shipping_rate_data][delivery_estimate][minimum][unit]', 'week');
+    form.set('shipping_options[0][shipping_rate_data][delivery_estimate][minimum][value]', '6');
+    form.set('shipping_options[0][shipping_rate_data][delivery_estimate][maximum][unit]', 'week');
+    form.set('shipping_options[0][shipping_rate_data][delivery_estimate][maximum][value]', '8');
 
     const domain = (process.env.DOMAIN || 'https://radiant-chebakia-53d2dc.netlify.app').replace(/\/$/, '');
     form.set('success_url', `${domain}/success.html?session_id={CHECKOUT_SESSION_ID}`);
@@ -71,7 +71,7 @@ exports.handler = async (event) => {
       form.set(`line_items[${i}][price_data][currency]`, 'usd');
       form.set(`line_items[${i}][price_data][unit_amount]`, String(product.unitAmount));
       form.set(`line_items[${i}][price_data][product_data][name]`, product.name);
-      form.set(`line_items[${i}][price_data][product_data][description]`, `Size: ${item.size || 'N/A'}`);
+      form.set(`line_items[${i}][price_data][product_data][description]`, `PREORDER — Size: ${item.size || 'N/A'} — Expected to ship in 6–8 weeks`);
       form.set(`line_items[${i}][quantity]`, String(item.quantity));
       form.set(`line_items[${i}][adjustable_quantity][enabled]`, 'true');
       form.set(`line_items[${i}][adjustable_quantity][minimum]`, '1');
@@ -80,6 +80,7 @@ exports.handler = async (event) => {
 
     // Keep selected sizes attached to the Stripe Checkout Session for fulfillment.
     form.set('metadata[blk_cart]', items.map(i => `${i.id}:${i.size || 'N/A'}x${i.quantity}`).join('|').slice(0, 500));
+    form.set('metadata[order_type]', 'preorder');
 
     const stripeResponse = await fetch('https://api.stripe.com/v1/checkout/sessions', {
       method: 'POST',
