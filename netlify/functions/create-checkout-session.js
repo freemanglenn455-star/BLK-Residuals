@@ -1,10 +1,10 @@
-const PRICE_IDS = {
-  bomber: 'price_1UGhxTFCHNQtBjUvUN7eT160',
-  varsity: 'price_1UGlCQFCHNQtBjUvOYNJSf0F',
-  denim: 'price_1UGlXdFCHNQtBjUv5hlKktab',
-  hoodie: 'price_1UGlj0FCHNQtBjUvIjCNsNHS',
-  tracksuit: 'price_1UGlkvFCHNQtBjUvunAWyPTh',
-  hat: 'price_1UGlx1FCHNQtBjUvjYtFJ3Yt'
+const PRODUCTS = {
+  bomber: { name: 'Signature Rhinestone Bomber', unitAmount: 29500 },
+  varsity: { name: 'Black-on-Black Varsity', unitAmount: 22500 },
+  denim: { name: 'Furry-Patch Denim Jacket', unitAmount: 17500 },
+  tracksuit: { name: 'Premium Tracksuit', unitAmount: 14500 },
+  hoodie: { name: 'Premium Oversized Hoodie', unitAmount: 9500 },
+  hat: { name: 'Signature Fitted Hat', unitAmount: 5000 }
 };
 
 exports.handler = async (event) => {
@@ -25,7 +25,7 @@ exports.handler = async (event) => {
 
     const grouped = new Map();
     for (const item of cart) {
-      if (!item || !PRICE_IDS[item.id]) {
+      if (!item || !PRODUCTS[item.id]) {
         return { statusCode: 400, body: 'Invalid product' };
       }
       const size = String(item.size || '').slice(0, 20);
@@ -50,7 +50,11 @@ exports.handler = async (event) => {
     form.set('cancel_url', `${domain}/#drop`);
 
     items.forEach((item, i) => {
-      form.set(`line_items[${i}][price]`, PRICE_IDS[item.id]);
+      const product = PRODUCTS[item.id];
+      form.set(`line_items[${i}][price_data][currency]`, 'usd');
+      form.set(`line_items[${i}][price_data][unit_amount]`, String(product.unitAmount));
+      form.set(`line_items[${i}][price_data][product_data][name]`, product.name);
+      form.set(`line_items[${i}][price_data][product_data][description]`, `Size: ${item.size || 'N/A'}`);
       form.set(`line_items[${i}][quantity]`, String(item.quantity));
       form.set(`line_items[${i}][adjustable_quantity][enabled]`, 'true');
       form.set(`line_items[${i}][adjustable_quantity][minimum]`, '1');
