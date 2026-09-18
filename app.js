@@ -1,33 +1,21 @@
-const PRODUCTS = [
-  {
-    id: "bomber",
-    name: "Signature Rhinestone Bomber",
-    price: 295,
-    priceId: "",
-    image: "assets/bomber.png",
-    tagline: "THE STATEMENT PIECE.",
-    sizes: ["S","M","L","XL","2XL"]
-  },
-  {
-    id: "varsity",
-    name: "Black-on-Black Varsity",
-    price: 225,
-    priceId: "",
-    image: "assets/varsity.png",
-    tagline: "BLACK ON BLACK. NOTHING BASIC ABOUT IT.",
-    sizes: ["S","M","L","XL","2XL"]
-  },
-  {
-    id: "denim",
-    name: "Furry-Patch Denim",
-    price: 175,
-    priceId: "price_1UG1xDFCHNQtBjUv5hlKktab",
-    image: "assets/denim.png",
-    tagline: "DENIM RECONSTRUCTED.",
-    sizes: ["S","M","L","XL","2XL"]
-  },
-  {
-    id: "hoodie",
-    name: "Premium Oversized Hoodie",
-    price: 95,
-    priceId: "price_
+const products=[
+{id:'bomber',image:'assets/bomber.png',name:'Signature Rhinestone Bomber',price:295,type:'Jacket',sizes:['S','M','L','XL','2XL'],desc:'Premium statement bomber with BLK crown rhinestone detailing.',detail:'Oversized luxury bomber concept with premium hardware, statement crown artwork and limited-drop attitude.'},
+{id:'varsity',image:'assets/varsity.png',name:'Black-on-Black Varsity',price:225,type:'Jacket',sizes:['S','M','L','XL','2XL'],desc:'Tonal varsity silhouette with black rhinestone branding.',detail:'Black-on-black varsity concept with tonal finishes and rhinestone BLK identity.'},
+{id:'denim',image:'assets/denim.png',name:'Furry-Patch Denim Jacket',price:175,type:'Jacket',sizes:['S','M','L','XL','2XL'],desc:'Washed black denim with custom BLK furry-patch artwork.',detail:'Heavyweight washed-black denim concept with tactile BLK furry-patch details.'},
+{id:'tracksuit',image:'assets/tracksuit.png',name:'Premium Tracksuit',price:145,type:'Set',sizes:['S','M','L','XL','2XL'],desc:'Two-piece streetwear set with tonal crown branding.',detail:'Premium two-piece track set concept with relaxed fit and tonal crown branding.'},
+{id:'hoodie',image:'assets/hoodie.png',name:'Premium Oversized Hoodie',price:95,type:'Hoodie',sizes:['S','M','L','XL','2XL'],desc:'Heavyweight oversized hoodie with structured hood.',detail:'Heavyweight oversized hoodie concept with structured hood and tonal BLK embroidery.'},
+{id:'hat',image:'assets/hat.png',name:'Signature Fitted Hat',price:50,type:'Headwear',sizes:['7','7 1/8','7 1/4','7 3/8','7 1/2','7 5/8','7 3/4','7 7/8','8'],desc:'Structured fitted cap with raised BLK crown embroidery.',detail:'Structured fitted cap concept with raised crown embroidery and premium interior finishing.'}
+];
+let cart=JSON.parse(localStorage.getItem('blkCart')||'[]');
+const $=s=>document.querySelector(s); const money=n=>`$${n.toFixed(2)}`;
+function save(){localStorage.setItem('blkCart',JSON.stringify(cart));renderCart()}
+function renderProducts(){const grid=$('#products');grid.innerHTML='';products.forEach((p,i)=>grid.innerHTML+=`<article class="card"><span class="num">0${i+1} / ${p.type.toUpperCase()}</span><div class="product-art"><img src="${p.image}" alt="${p.name}"></div><h3>${p.name}</h3><p>${p.desc}</p><span class="price">${money(p.price)}</span><button class="view" data-id="${p.id}">VIEW PIECE</button></article>`);document.querySelectorAll('.view').forEach(b=>b.onclick=()=>openProduct(b.dataset.id))}
+function openProduct(id){const p=products.find(x=>x.id===id);$('#modalBody').innerHTML=`<div class="modal-art"><img src="${p.image}" alt="${p.name}"></div><div class="modal-copy"><p class="eyebrow">DROP 001 — LIMITED RELEASE</p><h2>${p.name}</h2><div class="modal-price">${money(p.price)}</div><p>${p.detail}</p><label>SELECT ${p.id==='hat'?'FITTED SIZE':'SIZE'}</label><div class="sizes">${p.sizes.map((s,i)=>`<button class="size ${i===0?'selected':''}" data-size="${s}">${s}</button>`).join('')}</div><button class="cta full" id="modalAdd">ADD TO BAG</button><div class="details"><strong>PRODUCT NOTES</strong><span>Drop 001 concept • Premium materials • BLK crown identity</span><strong>SHIPPING & RETURNS</strong><span>Final shipping rates, production timing and return policy will be confirmed before launch.</span></div></div>`;$('#productModal').classList.add('open');document.querySelectorAll('.size').forEach(b=>b.onclick=()=>{document.querySelectorAll('.size').forEach(x=>x.classList.remove('selected'));b.classList.add('selected')});$('#modalAdd').onclick=()=>{const size=$('.size.selected').dataset.size;cart.push({id:p.id,size});save();toast(`${p.name} — ${size} added`);closeModal()}}
+function closeModal(){$('#productModal').classList.remove('open')}
+function renderCart(){const items=$('#cartItems');$('#bag').textContent=`BAG (${cart.length})`;if(!cart.length){items.innerHTML='<p class="empty">Your bag is empty.</p>';$('#subtotal').textContent='$0.00';return}items.innerHTML=cart.map((c,i)=>{const p=products.find(x=>x.id===c.id);return `<div class="cart-item"><div><strong>${p.name}</strong><span>Size ${c.size}</span></div><div><b>${money(p.price)}</b><button class="remove" data-i="${i}">REMOVE</button></div></div>`}).join('');$('#subtotal').textContent=money(cart.reduce((a,c)=>a+products.find(p=>p.id===c.id).price,0));document.querySelectorAll('.remove').forEach(b=>b.onclick=()=>{cart.splice(+b.dataset.i,1);save()})}
+function toast(m){let t=$('#toast');t.textContent=m;t.classList.add('show');setTimeout(()=>t.classList.remove('show'),1600)}
+renderProducts();renderCart();
+$('#bag').onclick=()=>$('#cart').classList.add('open');$('#cartClose').onclick=()=>$('#cart').classList.remove('open');$('#modalClose').onclick=closeModal;$('#productModal').onclick=e=>{if(e.target.id==='productModal')closeModal()};
+$('#checkout').onclick=async()=>{if(!cart.length){toast('Your bag is empty.');return}const b=$('#checkout');const old=b.textContent;b.disabled=true;b.textContent='OPENING SECURE CHECKOUT…';try{const r=await fetch('/.netlify/functions/create-checkout-session',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({cart})});if(!r.ok)throw new Error(await r.text());const {url}=await r.json();window.location.href=url}catch(e){console.error(e);toast('Checkout could not start. Please try again.');b.disabled=false;b.textContent=old}};
+$('#form').onsubmit=e=>{e.preventDefault();$('#msg').textContent='Welcome to the BLK List — signup integration comes next.';e.target.reset()};
+$('#menu').onclick=()=>$('#nav').classList.toggle('mobile-open');
