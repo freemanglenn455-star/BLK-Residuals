@@ -37,6 +37,10 @@ exports.handler = async (event) => {
     }
 
     const items = [...grouped.values()];
+    const subtotal = items.reduce(
+      (total, item) => total + PRODUCTS[item.id].unitAmount * item.quantity,
+      0
+    );
     const form = new URLSearchParams();
     form.set('mode', 'payment');
     form.set('billing_address_collection', 'required');
@@ -44,6 +48,19 @@ exports.handler = async (event) => {
     form.set('shipping_address_collection[allowed_countries][0]', 'US');
     form.set('automatic_tax[enabled]', 'false');
     form.set('allow_promotion_codes', 'false');
+
+    const shippingAmount = subtotal >= 25000 ? 0 : 1295;
+    form.set('shipping_options[0][shipping_rate_data][type]', 'fixed_amount');
+    form.set('shipping_options[0][shipping_rate_data][fixed_amount][amount]', String(shippingAmount));
+    form.set('shipping_options[0][shipping_rate_data][fixed_amount][currency]', 'usd');
+    form.set(
+      'shipping_options[0][shipping_rate_data][display_name]',
+      shippingAmount === 0 ? 'Free U.S. Shipping' : 'Standard U.S. Shipping'
+    );
+    form.set('shipping_options[0][shipping_rate_data][delivery_estimate][minimum][unit]', 'business_day');
+    form.set('shipping_options[0][shipping_rate_data][delivery_estimate][minimum][value]', '5');
+    form.set('shipping_options[0][shipping_rate_data][delivery_estimate][maximum][unit]', 'business_day');
+    form.set('shipping_options[0][shipping_rate_data][delivery_estimate][maximum][value]', '10');
 
     const domain = (process.env.DOMAIN || 'https://radiant-chebakia-53d2dc.netlify.app').replace(/\/$/, '');
     form.set('success_url', `${domain}/success.html?session_id={CHECKOUT_SESSION_ID}`);
