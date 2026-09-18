@@ -1,0 +1,109 @@
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;background:#050505;color:#f5f1e8;font-family:Arial,Helvetica,sans-serif}
+a{color:inherit;text-decoration:none}
+button,input{font:inherit}
+
+header{height:78px;padding:0 5%;display:flex;align-items:center;justify-content:space-between;background:#050505;border-bottom:1px solid #292929;position:sticky;top:0;z-index:20}
+.brand{font-weight:900;letter-spacing:2px}
+nav{display:flex;gap:28px;font-size:12px;letter-spacing:1.5px}
+.head-actions{display:flex;gap:12px}
+header button{background:none;color:#fff;border:0;font-size:12px;letter-spacing:1px}
+
+.hero{height:78vh;min-height:620px;position:relative;overflow:hidden;background:linear-gradient(135deg,#111,#020202)}
+.hero img{width:100%;height:100%;object-fit:cover;opacity:.72}
+.overlay{position:absolute;inset:0;padding:0 7%;display:flex;flex-direction:column;justify-content:center;background:linear-gradient(90deg,rgba(0,0,0,.78),rgba(0,0,0,.12))}
+.overlay p,.eyebrow,.intro>p,.sectionhead p,.story>p,.signup>p{color:#c9a85b;font-size:11px;font-weight:bold;letter-spacing:3px}
+h1{font-size:clamp(54px,8vw,120px);line-height:.88;letter-spacing:-4px;margin:16px 0 34px;max-width:1000px}
+.cta{display:inline-block;width:max-content;background:#c9a85b;color:#050505;padding:17px 28px;font-weight:900;font-size:12px;letter-spacing:1.5px;border:0}
+
+.ticker{display:flex;justify-content:space-around;gap:25px;padding:18px;background:#c9a85b;color:#050505;font-weight:900;font-size:11px;letter-spacing:2px;overflow:hidden}
+
+.intro{text-align:center;padding:110px 7%}
+.intro h2,.sectionhead h2,.story h2,.lookbook h2,.signup h2{font-size:clamp(38px,6vw,78px);line-height:.95;margin:15px 0}
+.lede{max-width:600px;margin:25px auto;color:#aaa;line-height:1.7}
+
+.drop{padding:80px 5% 120px}
+.sectionhead{text-align:center;margin-bottom:55px}
+.sectionhead span{color:#777;font-size:12px;letter-spacing:2px}
+.grid{display:grid;grid-template-columns:repeat(3,1fr);gap:20px}
+.product{background:#0c0c0c;border:1px solid #1f1f1f}
+.product-image{aspect-ratio:4/5;background:#111;overflow:hidden;position:relative}
+.product-image img{width:100%;height:100%;object-fit:cover;transition:.4s}
+.product:hover img{transform:scale(1.025)}
+.product-info{padding:22px}
+.product-info h3{margin:0 0 8px;font-size:17px}
+.product-info p{margin:0 0 18px;color:#aaa;font-size:12px;letter-spacing:1px}
+.product-bottom{display:flex;align-items:center;justify-content:space-between}
+.price{font-weight:bold;color:#c9a85b}
+.view{background:none;border:0;color:#fff;font-size:11px;letter-spacing:1px;border-bottom:1px solid #555;padding:5px 0}
+
+.story{padding:130px 8%;background:#0b0b0b;text-align:center}
+.story>p:not(:first-child){max-width:720px;margin:25px auto;color:#aaa;line-height:1.8}
+.text-link{display:inline-block;margin-top:25px;color:#c9a85b;font-size:12px;font-weight:bold;letter-spacing:1px}
+
+.lookbook{padding:100px 7%;display:grid;grid-template-columns:1fr 1fr;align-items:center;gap:70px}
+.lookbook p{color:#aaa;line-height:1.7}
+.look-art{height:620px;background:linear-gradient(145deg,#1a1a1a,#050505);border:1px solid #222;position:relative;overflow:hidden}
+.image-look img{width:100%;height:100%;object-fit:cover}
+
+.signup{text-align:center;padding:110px 7%;border-top:1px solid #222}
+.signup>p:not(:first-child){color:#888}
+form{max-width:520px;margin:30px auto 10px;display:flex}
+input{flex:1;padding:17px;background:#111;border:1px solid #333;color:#fff;min-width:0}
+form button{padding:0 25px;background:#c9a85b;border:0;font-weight:bold}
+
+footer{padding:45px 5%;border-top:1px solid #222;display:flex;justify-content:space-between;align-items:center;gap:20px;color:#777;font-size:11px;letter-spacing:1px}
+footer strong{color:#fff}
+.footer-links{display:flex;gap:18px}
+
+.cart{position:fixed;right:-480px;top:0;width:min(440px,100%);height:100%;background:#090909;z-index:50;border-left:1px solid #333;transition:.35s;padding:28px;display:flex;flex-direction:column}
+.cart.open{right:0}
+.cart-head{display:flex;justify-content:space-between;align-items:center;border-bottom:1px solid #222}
+.cart-head button,.close{background:none;border:0;color:#fff;font-size:32px}
+#cartItems{flex:1;overflow:auto;padding:20px 0}
+.cart-item{display:grid;grid-template-columns:70px 1fr auto;gap:14px;padding:15px 0;border-bottom:1px solid #222}
+.cart-item img{width:70px;height:85px;object-fit:cover}
+.cart-item h4{margin:4px 0}
+.cart-item small{color:#888}
+.remove{background:none;border:0;color:#888;font-size:11px}
+.cart-foot{border-top:1px solid #333;padding-top:22px}
+.cart-foot>div{display:flex;justify-content:space-between;margin-bottom:20px}
+.full{width:100%;cursor:pointer}
+
+.modal{display:none;position:fixed;inset:0;background:rgba(0,0,0,.85);z-index:60;padding:5%;overflow:auto}
+.modal.show{display:block}
+.modal-panel{max-width:1000px;margin:auto;background:#0b0b0b;position:relative;border:1px solid #333}
+.close{position:absolute;right:18px;top:12px;z-index:2}
+.modal-body{display:grid;grid-template-columns:1fr 1fr}
+.modal-body img{width:100%;height:620px;object-fit:cover}
+.modal-copy{padding:55px}
+.modal-copy h2{font-size:38px;margin:8px 0}
+.modal-copy .big-price{color:#c9a85b;font-size:20px}
+.sizes{display:flex;gap:8px;margin:25px 0}
+.size{background:#111;color:#fff;border:1px solid #444;padding:12px 15px}
+.size.selected{border-color:#c9a85b;color:#c9a85b}
+.add{width:100%;background:#c9a85b;border:0;padding:17px;font-weight:900;margin-top:15px}
+
+#toast{position:fixed;left:50%;bottom:25px;transform:translate(-50%,100px);background:#c9a85b;color:#050505;padding:13px 22px;font-size:12px;font-weight:bold;z-index:100;transition:.3s}
+#toast.show{transform:translate(-50%,0)}
+
+@media(max-width:800px){
+header{height:66px;padding:0 4%}
+nav{display:none}
+.hero{height:72vh;min-height:560px}
+.overlay{padding:0 6%}
+h1{font-size:52px;letter-spacing:-2px}
+.grid{grid-template-columns:1fr 1fr}
+.lookbook{grid-template-columns:1fr;gap:30px}
+.look-art{height:480px}
+footer{flex-direction:column;text-align:center}
+.modal{padding:0}
+.modal-body{grid-template-columns:1fr}
+.modal-body img{height:420px}
+.modal-copy{padding:30px}
+}
+
+@media(max-width:520px){
+.grid{grid-template-columns:1fr}
+.ticker{
