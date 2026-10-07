@@ -18,9 +18,12 @@ exports.handler = async (event) => {
   }
 
   try {
-    const { cart = [] } = JSON.parse(event.body || '{}');
+    const { cart = [], preorderAccepted = false } = JSON.parse(event.body || '{}');
     if (!Array.isArray(cart) || cart.length === 0) {
       return { statusCode: 400, body: 'Cart is empty' };
+    }
+    if (preorderAccepted !== true) {
+      return { statusCode: 400, body: 'Preorder acknowledgement is required' };
     }
 
     const grouped = new Map();
@@ -81,6 +84,8 @@ exports.handler = async (event) => {
     // Keep selected sizes attached to the Stripe Checkout Session for fulfillment.
     form.set('metadata[blk_cart]', items.map(i => `${i.id}:${i.size || 'N/A'}x${i.quantity}`).join('|').slice(0, 500));
     form.set('metadata[order_type]', 'preorder');
+    form.set('metadata[preorder_lead_time]', '6-8 weeks');
+    form.set('metadata[preorder_acknowledged]', 'yes');
 
     const stripeResponse = await fetch('https://api.stripe.com/v1/checkout/sessions', {
       method: 'POST',
